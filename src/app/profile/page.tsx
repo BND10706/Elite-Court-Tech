@@ -147,8 +147,7 @@ export default function ProfilePage() {
       if (emailChanged) {
         updates.email = form.email
       }
-      const { data: authUpdateData, error: authErr } =
-        await supabase.auth.updateUser(updates)
+      const { error: authErr } = await supabase.auth.updateUser(updates)
       if (authErr) throw authErr
 
       // 2) If auth phone is empty or changed, initiate phone update with OTP
