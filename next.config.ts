@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
   // When deployed on GitHub Pages, use basePath and assetPrefix
   basePath: isGitHubPages ? `/${repoName}` : undefined,
   assetPrefix: isGitHubPages ? `/${repoName}/` : undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGitHubPages ? `/${repoName}` : '',
+  },
 }
 
 export default nextConfig
