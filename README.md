@@ -1,3 +1,14 @@
+## GitHub Pages Deployment
+
+This project is configured to deploy to GitHub Pages using static export.
+
+Local preview:
+
+1. Run `npm run build` then `npx serve out` to preview the exported site.
+2. On GitHub, enable Pages for the repository (Settings → Pages) and select "GitHub Actions".
+
+The workflow `.github/workflows/deploy-pages.yml` builds and publishes `out/` on pushes to `main`.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

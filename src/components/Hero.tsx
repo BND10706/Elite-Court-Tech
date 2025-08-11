@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Button from './ui/Button'
 
 export default function Hero() {
@@ -132,10 +133,12 @@ export default function Hero() {
         {/* Right: Large image placeholder */}
         <div className='lg:max-w-xl lg:w-[46%] md:w-1/2 w-full'>
           <div className='relative aspect-[5/4] w-full overflow-hidden rounded-xl ring-1 ring-white/10 bg-background-secondary/60'>
-            <img
-              className='absolute inset-0 size-full object-cover'
+            <Image
               alt='Elite Court Tech hero placeholder'
               src='https://images.unsplash.com/photo-1629901925121-8a141c2a42f4?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              fill
+              priority
+              className='object-cover'
             />
             {/* Optional gradient overlay for readability */}
             <div className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-background-hero/0 via-transparent to-background-hero/0'></div>

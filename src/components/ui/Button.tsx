@@ -6,14 +6,21 @@ import React from 'react'
 export type ButtonVariant = 'solid' | 'outline'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonBaseProps = {
   href?: string
   variant?: ButtonVariant
   size?: ButtonSize
   fullWidth?: boolean
   as?: 'button' | 'a' | 'link'
 }
+
+type ButtonAsButton = ButtonBaseProps &
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined }
+
+type ButtonAsLink = ButtonBaseProps &
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+
+export type ButtonProps = ButtonAsButton | ButtonAsLink
 
 export function buttonClasses({
   variant = 'solid',
@@ -44,39 +51,53 @@ export function buttonClasses({
       'text-[var(--accent-orange)] border border-[var(--accent-orange)] bg-transparent hover:bg-[var(--accent-orange)] hover:text-black active:translate-y-[1px]',
   }
 
-  return cx(base, sizes[size], variants[variant], fullWidth && 'w-full', className)
+  return cx(
+    base,
+    sizes[size],
+    variants[variant],
+    fullWidth && 'w-full',
+    className
+  )
 }
 
-export default function Button({
-  href,
-  variant = 'solid',
-  size = 'md',
-  fullWidth = false,
-  as,
-  className,
-  children,
-  ...rest
-}: ButtonProps) {
+export default function Button(props: ButtonProps) {
+  const {
+    href,
+    variant = 'solid',
+    size = 'md',
+    fullWidth = false,
+    as,
+    className,
+    children,
+    ...rest
+  } = props as ButtonProps
+
   const classes = buttonClasses({ variant, size, fullWidth, className })
 
+  // Link or anchor rendering
   if (href) {
-    // Prefer Next.js Link for internal links
     if (as === 'link' || href.startsWith('/')) {
+      // Next.js <Link> for internal links
+      const linkProps = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>
       return (
-        <Link href={href} className={classes} {...(rest as any)}>
+        <Link href={href} className={classes} {...linkProps}>
           {children}
         </Link>
       )
     }
+    const anchorProps = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>
     return (
-      <a href={href} className={classes} {...(rest as any)}>
+      <a href={href} className={classes} {...anchorProps}>
         {children}
       </a>
     )
   }
 
+  // Button rendering
+  const { type, ...buttonRest } =
+    rest as React.ButtonHTMLAttributes<HTMLButtonElement>
   return (
-    <button className={classes} {...rest}>
+    <button className={classes} type={type ?? 'button'} {...buttonRest}>
       {children}
     </button>
   )

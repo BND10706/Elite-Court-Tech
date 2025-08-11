@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -34,10 +35,13 @@ export default function SignInPage() {
           <div className='flex-1'>
             <div className='text-center'>
               <div className='flex justify-center mx-auto'>
-                <img
-                  className='w-auto h-20 sm:h-20'
+                <Image
                   src='/brand/Logo2.png'
                   alt='Elite Court Tech'
+                  width={120}
+                  height={80}
+                  className='h-20 w-auto sm:h-20'
+                  priority
                 />
               </div>
 
