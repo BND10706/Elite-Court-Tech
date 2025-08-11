@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -102,12 +103,12 @@ export default function SignInPage() {
 
               <p className='mt-6 text-sm text-center text-text-secondary'>
                 Don&apos;t have an account yet?{' '}
-                <a
+                <Link
                   href='/sign-up'
                   className='text-accent-orange focus:outline-none focus:underline hover:underline'
                 >
                   Sign up
-                </a>
+                </Link>
                 .
               </p>
             </div>
