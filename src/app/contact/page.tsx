@@ -1,3 +1,5 @@
+import ContactFormWrapper from './ContactFormWrapper'
+
 export const metadata = {
   title: 'Contact | Elite Court Tech',
   description: 'Get in touch with Elite Court Tech.',
@@ -30,8 +32,6 @@ export default function ContactPage() {
               <h2 className='text-xl font-semibold tracking-wide'>
                 Contact form
               </h2>
-              {/* Client form component extracted to avoid server component event handler warning */}
-              {/* import inside component to avoid early client bundle if tree-shaken */}
               <ContactFormWrapper />
             </div>
           </div>
@@ -43,12 +43,4 @@ export default function ContactPage() {
   )
 }
 
-// Lazy wrapper to keep main page a server component
-import dynamic from 'next/dynamic'
-const ContactForm = dynamic(() => import('../../components/ContactForm'), {
-  ssr: false,
-})
-
-function ContactFormWrapper() {
-  return <ContactForm />
-}
+// wrapper moved to separate client file
