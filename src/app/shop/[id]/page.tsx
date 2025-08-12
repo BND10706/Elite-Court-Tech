@@ -44,7 +44,11 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: { id: string }
+}) {
   if (!supabaseUrl || !supabaseAnonKey) {
     notFound()
   }
@@ -54,7 +58,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       `${supabaseUrl}/rest/v1/products?select=id,name,slug,category,brand,description,details,color,size,quantity,price,cover_image&id=eq.${params.id}`
     )
     product = data[0] || null
-  } catch (e) {
+  } catch {
     // swallow error for static export; will 404
   }
   if (!product) {

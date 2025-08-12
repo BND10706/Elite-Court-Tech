@@ -44,8 +44,11 @@ export default function ContactPage() {
 }
 
 // Lazy wrapper to keep main page a server component
+import dynamic from 'next/dynamic'
+const ContactForm = dynamic(() => import('../../components/ContactForm'), {
+  ssr: false,
+})
+
 function ContactFormWrapper() {
-  // dynamic import to keep boundary clean
-  const Form = require('../../components/ContactForm').default
-  return <Form />
+  return <ContactForm />
 }

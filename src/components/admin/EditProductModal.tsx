@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 
 interface Props {
@@ -8,10 +8,22 @@ interface Props {
   onSaved: () => void
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function EditProductModal({ id, onClose, onSaved }: Props) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState<any>({})
+  interface ProductForm {
+    name?: string
+    price?: number | string
+    quantity?: number | string
+    category?: string
+    brand?: string
+    color?: string
+    size?: string
+    description?: string
+    details?: string
+  }
+  const [form, setForm] = useState<ProductForm>({})
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -24,7 +36,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
         .maybeSingle()
       if (!cancelled) {
         if (error) setMessage(error.message)
-        setForm(data)
+        setForm((data || {}) as ProductForm)
         setLoading(false)
       }
     })()
@@ -33,12 +45,14 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
     }
   }, [id])
 
-  function onChange(e: any) {
+  function onChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { name, value } = e.target
-    setForm((f: any) => ({ ...f, [name]: value }))
+    setForm((f) => ({ ...f, [name]: value }))
   }
 
-  async function save() {
+  const save = useCallback(async () => {
     setSaving(true)
     setMessage(null)
     try {
@@ -59,12 +73,12 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
       if (error) throw error
       onSaved()
       onClose()
-    } catch (e: any) {
-      setMessage(e.message)
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : 'Save failed')
     } finally {
       setSaving(false)
     }
-  }
+  }, [id, form, onClose, onSaved])
 
   if (loading)
     return (
@@ -81,7 +95,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Name
             <input
               name='name'
-              value={form?.name || ''}
+              value={form.name ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -90,7 +104,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Price
             <input
               name='price'
-              value={form?.price || ''}
+              value={form.price ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -99,7 +113,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Qty
             <input
               name='quantity'
-              value={form?.quantity || ''}
+              value={form.quantity ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -108,7 +122,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Category
             <input
               name='category'
-              value={form?.category || ''}
+              value={form.category ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -117,7 +131,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Brand
             <input
               name='brand'
-              value={form?.brand || ''}
+              value={form.brand ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -126,7 +140,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Color
             <input
               name='color'
-              value={form?.color || ''}
+              value={form.color ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -135,7 +149,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
             Size
             <input
               name='size'
-              value={form?.size || ''}
+              value={form.size ?? ''}
               onChange={onChange}
               className='input'
             />
@@ -145,7 +159,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
           Description
           <textarea
             name='description'
-            value={form?.description || ''}
+            value={form.description ?? ''}
             onChange={onChange}
             className='input resize-y'
             rows={3}
@@ -155,7 +169,7 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
           Details
           <textarea
             name='details'
-            value={form?.details || ''}
+            value={form.details ?? ''}
             onChange={onChange}
             className='input resize-y'
             rows={3}
