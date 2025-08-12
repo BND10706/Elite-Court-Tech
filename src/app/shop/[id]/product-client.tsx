@@ -7,6 +7,7 @@ export default function ProductClient({ product }: { product: Product }) {
   const { addItem } = useCart()
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
+  const [tab, setTab] = useState<'description' | 'details'>('description')
 
   function handleAdd() {
     if (adding) return
@@ -35,19 +36,49 @@ export default function ProductClient({ product }: { product: Product }) {
                 {product.name}
               </h1>
               <div className='flex mt-6 border-b border-white/10 text-sm'>
-                <button className='flex-1 py-2 px-1 text-[var(--accent-orange)] border-b-2 border-[var(--accent-orange)] font-medium'>
+                <button
+                  onClick={() => setTab('description')}
+                  className={`flex-1 py-2 px-1 font-medium transition-colors border-b-2 ${
+                    tab === 'description'
+                      ? 'text-[var(--accent-orange)] border-[var(--accent-orange)]'
+                      : 'text-[var(--text-secondary)] border-transparent hover:text-[var(--text-primary)]'
+                  }`}
+                >
                   Description
                 </button>
-                <button className='flex-1 py-2 px-1 text-[var(--text-secondary)] border-b-2 border-transparent hover:text-[var(--text-primary)]'>
-                  Reviews
-                </button>
-                <button className='flex-1 py-2 px-1 text-[var(--text-secondary)] border-b-2 border-transparent hover:text-[var(--text-primary)]'>
+                <button
+                  onClick={() => setTab('details')}
+                  className={`flex-1 py-2 px-1 font-medium transition-colors border-b-2 ${
+                    tab === 'details'
+                      ? 'text-[var(--accent-orange)] border-[var(--accent-orange)]'
+                      : 'text-[var(--text-secondary)] border-transparent hover:text-[var(--text-primary)]'
+                  }`}
+                >
                   Details
                 </button>
               </div>
-              <p className='leading-relaxed mt-6 text-[var(--text-secondary)]'>
-                {product.description}
-              </p>
+              {tab === 'description' && (
+                <p className='leading-relaxed mt-6 text-[var(--text-secondary)]'>
+                  {product.description}
+                </p>
+              )}
+              {tab === 'details' && (
+                <div className='mt-6 text-sm text-[var(--text-secondary)] space-y-4'>
+                  <p>
+                    Engineered with a precision-balanced core and performance layering to
+                    maximize stability during high‑intensity drills. Optimized surface
+                    texture improves control and tactile feedback.
+                  </p>
+                  <ul className='grid grid-cols-2 gap-x-6 gap-y-2 text-[var(--text-primary)]/90'>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Model</span><span>ECT-{product.id.padStart(3,'0')}</span></li>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Weight</span><span>{(Math.random()*1.2+0.8).toFixed(2)} kg</span></li>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Material</span><span>Composite Blend</span></li>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Warranty</span><span>12 mo.</span></li>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Origin</span><span>USA / EU</span></li>
+                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Batch</span><span>Q3-{new Date().getFullYear()}</span></li>
+                  </ul>
+                </div>
+              )}
               <div className='mt-8 divide-y divide-white/10 border-y border-white/10'>
                 <InfoRow label='Color' value={product.color || '—'} />
                 <InfoRow label='Size' value={product.size || '—'} />
@@ -83,10 +114,10 @@ export default function ProductClient({ product }: { product: Product }) {
                   </svg>
                 </button>
               </div>
-              {product.details && (
+              {product.details && tab === 'details' && (
                 <div className='mt-10'>
                   <h3 className='text-sm font-semibold tracking-wide text-[var(--text-primary)] mb-2'>
-                    Technical Details
+                    Additional Notes
                   </h3>
                   <p className='text-[var(--text-secondary)] text-sm leading-relaxed whitespace-pre-line'>
                     {product.details}
