@@ -133,23 +133,6 @@ export default function SignInForm() {
           <p className='mt-4 text-sm text-accent-orange'>{message}</p>
         )}
 
-        <div className='mt-6 flex gap-3'>
-          <Button
-            variant='outline'
-            onClick={() => oauth('google')}
-            disabled={loading}
-          >
-            Continue with Google
-          </Button>
-          <Button
-            variant='outline'
-            onClick={() => oauth('github')}
-            disabled={loading}
-          >
-            Continue with GitHub
-          </Button>
-        </div>
-
         <p className='mt-6 text-sm text-center text-text-secondary'>
           Don&apos;t have an account yet?{' '}
           <Link

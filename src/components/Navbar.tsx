@@ -6,6 +6,7 @@ import Button from './ui/Button'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
+import { useCart } from './cart/CartProvider'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { totalCount } = useCart()
 
   // Load current user and subscribe to auth changes
   useEffect(() => {
@@ -137,14 +139,14 @@ export default function Navbar() {
             </Link>
             <Link
               className='my-2 transition-colors duration-300 transform text-[var(--text-secondary)] hover:text-[var(--accent-orange)] md:mx-4 md:my-0'
-              href='/'
+              href='/contact'
               onClick={() => setIsOpen(false)}
             >
               Contact
             </Link>
             <Link
               className='my-2 transition-colors duration-300 transform text-[var(--text-secondary)] hover:text-[var(--accent-orange)] md:mx-4 md:my-0'
-              href='/'
+              href='/about'
               onClick={() => setIsOpen(false)}
             >
               About
@@ -154,7 +156,7 @@ export default function Navbar() {
           <div className='flex items-center justify-center gap-4'>
             <Link
               className='relative transition-colors duration-300 transform text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              href='#'
+              href='/cart'
               aria-label='Cart'
             >
               <svg
@@ -172,7 +174,9 @@ export default function Navbar() {
                 />
               </svg>
 
-              {/* <span className='absolute top-0 left-0 p-1 text-xs rounded-full bg-[var(--accent-orange)] text-[var(--background-primary)]'></span> */}
+              {totalCount > 0 && (
+                <span className='absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--accent-orange)] shadow-[0_0_0_2px_var(--background-secondary)]'></span>
+              )}
             </Link>
 
             {!user ? (
