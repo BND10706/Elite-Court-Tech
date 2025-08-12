@@ -1,26 +1,64 @@
 import { notFound } from 'next/navigation'
-import { products, getProduct } from '@/data/products'
-import type { Metadata } from 'next'
-import React from 'react'
-import { ProductClient } from '@/components/product/ProductClient'
+import ProductClient from './product-client'
 
-type Props = { params: { id: string } }
-
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }))
+export type Product = {
+  id: string
+  name: string
+  slug: string | null
+  category: string | null
+  brand: string | null
+  description: string | null
+  details: string | null
+  color: string | null
+  size: string | null
+  quantity: number | null
+  price: number
+  cover_image: string | null
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const product = getProduct(params.id)
-  if (!product) return { title: 'Product Not Found | Elite Court Tech' }
-  return {
-    title: `${product.name} | Elite Court Tech`,
-    description: product.description,
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+async function fetchJSON<T>(url: string): Promise<T> {
+  const res = await fetch(url, {
+    headers: {
+      apikey: supabaseAnonKey || '',
+      Authorization: `Bearer ${supabaseAnonKey}`,
+    },
+    // Ensure fresh data for each build; during dev it's fine
+    next: { revalidate: 0 },
+  })
+  if (!res.ok) throw new Error(`Failed fetch ${res.status}`)
+  return res.json() as Promise<T>
+}
+
+export async function generateStaticParams() {
+  if (!supabaseUrl || !supabaseAnonKey) return []
+  try {
+    const data = await fetchJSON<{ id: string }[]>(
+      `${supabaseUrl}/rest/v1/products?select=id`
+    )
+    return data.map((p) => ({ id: p.id }))
+  } catch {
+    return []
   }
 }
 
-export default function ProductPage({ params }: Props) {
-  const product = getProduct(params.id)
-  if (!product) notFound()
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    notFound()
+  }
+  let product: Product | null = null
+  try {
+    const data = await fetchJSON<Product[]>(
+      `${supabaseUrl}/rest/v1/products?select=id,name,slug,category,brand,description,details,color,size,quantity,price,cover_image&id=eq.${params.id}`
+    )
+    product = data[0] || null
+  } catch (e) {
+    // swallow error for static export; will 404
+  }
+  if (!product) {
+    notFound()
+  }
   return <ProductClient product={product} />
 }

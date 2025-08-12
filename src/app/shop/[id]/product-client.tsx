@@ -1,7 +1,20 @@
 'use client'
 import React, { useState } from 'react'
 import { useCart } from '@/components/cart/CartProvider'
-import type { Product } from '@/data/products'
+
+export type Product = {
+  id: string
+  name: string
+  category: string | null
+  brand: string | null
+  description: string | null
+  details: string | null
+  color: string | null
+  size: string | null
+  quantity: number | null
+  price: number
+  cover_image: string | null
+}
 
 export default function ProductClient({ product }: { product: Product }) {
   const { addItem } = useCart()
@@ -16,7 +29,7 @@ export default function ProductClient({ product }: { product: Product }) {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: product.cover_image || '',
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -63,20 +76,46 @@ export default function ProductClient({ product }: { product: Product }) {
                 </p>
               )}
               {tab === 'details' && (
-                <div className='mt-6 text-sm text-[var(--text-secondary)] space-y-4'>
-                  <p>
-                    Engineered with a precision-balanced core and performance layering to
-                    maximize stability during high‑intensity drills. Optimized surface
-                    texture improves control and tactile feedback.
-                  </p>
-                  <ul className='grid grid-cols-2 gap-x-6 gap-y-2 text-[var(--text-primary)]/90'>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Model</span><span>ECT-{product.id.padStart(3,'0')}</span></li>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Weight</span><span>{(Math.random()*1.2+0.8).toFixed(2)} kg</span></li>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Material</span><span>Composite Blend</span></li>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Warranty</span><span>12 mo.</span></li>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Origin</span><span>USA / EU</span></li>
-                    <li className='flex justify-between'><span className='text-[var(--text-secondary)]'>Batch</span><span>Q3-{new Date().getFullYear()}</span></li>
-                  </ul>
+                <div className='mt-6 text-sm text-[var(--text-secondary)] space-y-6'>
+                  <div>
+                    <h3 className='text-[var(--text-primary)] font-semibold mb-2'>
+                      Product Details
+                    </h3>
+                    <p className='whitespace-pre-line leading-relaxed'>
+                      {product.details || 'No additional details provided.'}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className='text-[var(--text-primary)]/90 font-medium mb-2'>
+                      Attributes
+                    </h4>
+                    <ul className='grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2'>
+                      {[
+                        ['Brand', product.brand],
+                        ['Category', product.category],
+                        ['Color', product.color],
+                        ['Size', product.size],
+                        [
+                          'Quantity',
+                          product.quantity != null
+                            ? String(product.quantity)
+                            : undefined,
+                        ],
+                        ['Price', `$${product.price.toFixed(2)}`],
+                      ]
+                        .filter(([, v]) => v && v !== '—')
+                        .map(([k, v]) => (
+                          <li key={k} className='flex justify-between'>
+                            <span className='text-[var(--text-secondary)]'>
+                              {k}
+                            </span>
+                            <span className='text-[var(--text-primary)]'>
+                              {v}
+                            </span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
                 </div>
               )}
               <div className='mt-8 divide-y divide-white/10 border-y border-white/10'>
@@ -130,7 +169,10 @@ export default function ProductClient({ product }: { product: Product }) {
                 <img
                   alt={product.name}
                   className='w-full h-auto object-cover object-center'
-                  src={product.image}
+                  src={
+                    product.cover_image ||
+                    'https://placehold.co/800x800/0f0f0f/ffffff?text=No+Image'
+                  }
                 />
               </div>
             </div>

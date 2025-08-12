@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import { AdminNav } from '@/components/admin'
 
 export default function AdminPage() {
   const router = useRouter()
@@ -44,7 +45,8 @@ export default function AdminPage() {
 
   return (
     <main className='min-h-screen bg-background-primary text-text-primary'>
-      <div className='container mx-auto px-6 py-16'>
+      <div className='container mx-auto px-6 py-12'>
+        <AdminNav />
         <h1 className='text-3xl font-bold tracking-wide'>Admin Dashboard</h1>
         <p className='mt-4 text-text-secondary max-w-prose'>
           Restricted administrative area. Expose management widgets, stats, and
@@ -78,6 +80,7 @@ export default function AdminPage() {
             </p>
           </div>
         </section>
+        {/* Removed inline ProductForm; product creation moved to /admin/products/add */}
       </div>
     </main>
   )
