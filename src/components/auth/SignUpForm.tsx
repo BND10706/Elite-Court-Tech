@@ -99,6 +99,7 @@ export default function SignUpForm() {
             state: '',
             zip_code: '',
             country: '',
+            admin: false,
           })
           if (profileErr)
             console.warn('Profile insert skipped:', profileErr.message)

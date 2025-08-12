@@ -11,6 +11,7 @@ import { useCart } from './cart/CartProvider'
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -30,6 +31,26 @@ export default function Navbar() {
       sub.subscription.unsubscribe()
     }
   }, [])
+
+  // Load admin flag when user changes
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('admin')
+        .eq('id', user.id)
+        .maybeSingle()
+      if (!cancelled) setIsAdmin(Boolean(data?.admin))
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [user])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -266,6 +287,27 @@ export default function Navbar() {
                     </svg>
                     <span className='mx-1'>View profile</span>
                   </Link>
+                  {isAdmin && (
+                    <Link
+                      href='/admin'
+                      className='flex items-center p-3 text-sm capitalize transition-colors duration-200 text-[var(--text-secondary)] hover:bg-[var(--accent-orange)] hover:text-[var(--background-primary)]'
+                      role='menuitem'
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <svg
+                        className='w-5 h-5 mx-1'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M12 2L3 7v10l9 5 9-5V7l-9-5Zm0 2.18L19 8l-7 3.89L5 8l7-3.82ZM5 9.97l6 3.34v6.72l-6-3.33V9.97Zm8 10.06v-6.72l6-3.34v6.73l-6 3.33Z'
+                          fill='currentColor'
+                        />
+                      </svg>
+                      <span className='mx-1'>Admin Dashboard</span>
+                    </Link>
+                  )}
 
                   <Link
                     href='#'
