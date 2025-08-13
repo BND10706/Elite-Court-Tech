@@ -47,7 +47,6 @@ export default function ProductsAdminPage() {
         handleCancel as EventListener
       )
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- handlers stable enough
   }, [])
 
   useEffect(() => {

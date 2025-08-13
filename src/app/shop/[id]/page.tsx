@@ -44,8 +44,9 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const { id } = params
+// Loosen param typing to satisfy Next's PageProps constraint (which expects a broader shape)
+export default async function ProductPage(props: any) {
+  const id: string = props?.params?.id
   if (!supabaseUrl || !supabaseAnonKey) notFound()
   let product: Product | null = null
   try {
