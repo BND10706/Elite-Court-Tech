@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 
@@ -12,7 +12,7 @@ type ProductCard = {
   cover_image: string | null
 }
 
-export default function ShopPage() {
+function ShopPageInner() {
   const [products, setProducts] = useState<ProductCard[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -131,5 +131,30 @@ export default function ShopPage() {
         </div>
       </section>
     </main>
+  )
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className='relative min-h-screen text-text-primary'>
+          <section className='py-12 md:py-16'>
+            <div className='container mx-auto px-6'>
+              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className='h-60 rounded-lg bg-background-secondary/40 animate-pulse'
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+      }
+    >
+      <ShopPageInner />
+    </Suspense>
   )
 }
