@@ -44,10 +44,12 @@ export async function generateStaticParams() {
   }
 }
 
-// Loosen param typing to satisfy Next's internal PageProps constraint; limit to this line only.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function ProductPage(props: any) {
-  const id: string = props?.params?.id
+type RouteParams = { id: string }
+interface PageProps {
+  params: RouteParams | Promise<RouteParams>
+}
+export default async function ProductPage({ params }: PageProps) {
+  const { id } = await params
   if (!supabaseUrl || !supabaseAnonKey) notFound()
   let product: Product | null = null
   try {
