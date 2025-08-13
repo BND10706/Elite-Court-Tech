@@ -44,12 +44,12 @@ export async function generateStaticParams() {
   }
 }
 
-type RouteParams = { id: string }
-interface PageProps {
-  params: RouteParams | Promise<RouteParams>
-}
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params
+// Use loose props typing to satisfy Next's internal PageProps constraint (params is expected as Promise|undefined internally)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function ProductPage(props: any) {
+  const params = await props?.params // awaiting plain object is safe (returns value)
+  const id = params?.id as string | undefined
+  if (!id) notFound()
   if (!supabaseUrl || !supabaseAnonKey) notFound()
   let product: Product | null = null
   try {
