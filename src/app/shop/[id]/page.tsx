@@ -44,25 +44,20 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { id: string }
-}) {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    notFound()
-  }
+type ProductPageProps = { params: { id: string } }
+
+export default async function ProductPage(props: ProductPageProps) {
+  const { id } = props.params
+  if (!supabaseUrl || !supabaseAnonKey) notFound()
   let product: Product | null = null
   try {
     const data = await fetchJSON<Product[]>(
-      `${supabaseUrl}/rest/v1/products?select=id,name,slug,category,brand,description,details,color,size,quantity,price,cover_image&id=eq.${params.id}`
+      `${supabaseUrl}/rest/v1/products?select=id,name,slug,category,brand,description,details,color,size,quantity,price,cover_image&id=eq.${id}`
     )
     product = data[0] || null
   } catch {
-    // swallow error for static export; will 404
+    /* ignore */
   }
-  if (!product) {
-    notFound()
-  }
+  if (!product) notFound()
   return <ProductClient product={product} />
 }

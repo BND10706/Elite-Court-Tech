@@ -9,6 +9,8 @@ interface Props {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// Callback props are intentional in this client component; suppress serialization rule.
+// eslint-disable-next-line @next/next/no-async-client-component
 export function EditProductModal({ id, onClose, onSaved }: Props) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
