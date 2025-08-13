@@ -4,6 +4,12 @@ import { PRODUCT_IMAGE_BUCKET } from '@/lib/constants'
 
 export async function GET() {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Admin client not configured' },
+        { status: 500 }
+      )
+    }
     const storage = supabaseAdmin.storage as unknown as {
       listBuckets?: () => Promise<{
         data: { name: string }[] | null
