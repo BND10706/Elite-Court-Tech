@@ -44,7 +44,8 @@ export async function generateStaticParams() {
   }
 }
 
-// Loosen param typing to satisfy Next's PageProps constraint (which expects a broader shape)
+// Loosen param typing to satisfy Next's internal PageProps constraint; limit to this line only.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function ProductPage(props: any) {
   const id: string = props?.params?.id
   if (!supabaseUrl || !supabaseAnonKey) notFound()
