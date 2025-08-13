@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+export const dynamic = 'force-static'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { PRODUCT_IMAGE_BUCKET } from '@/lib/constants'
 
