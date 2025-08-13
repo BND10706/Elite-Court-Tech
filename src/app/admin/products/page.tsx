@@ -25,6 +25,31 @@ export default function ProductsAdminPage() {
   const [message, setMessage] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
+  // Event listeners for modal events (must be declared before any conditional returns to satisfy hooks rules)
+  useEffect(() => {
+    function handleSaved(e: Event) {
+      const id = (e as CustomEvent).detail?.id as string | undefined
+      if (id) refresh()
+      setEditingId(null)
+    }
+    function handleCancel() {
+      setEditingId(null)
+    }
+    window.addEventListener('product-saved', handleSaved as EventListener)
+    window.addEventListener(
+      'product-edit-cancel',
+      handleCancel as EventListener
+    )
+    return () => {
+      window.removeEventListener('product-saved', handleSaved as EventListener)
+      window.removeEventListener(
+        'product-edit-cancel',
+        handleCancel as EventListener
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handlers stable enough
+  }, [])
+
   useEffect(() => {
     let cancelled = false
     ;(async () => {
@@ -84,30 +109,6 @@ export default function ProductsAdminPage() {
       </main>
     )
   if (!authorized) return null
-
-  // Event listeners for modal events (avoid passing function props to modal)
-  useEffect(() => {
-    function handleSaved(e: Event) {
-      const id = (e as CustomEvent).detail?.id as string | undefined
-      if (id) refresh()
-      setEditingId(null)
-    }
-    function handleCancel() {
-      setEditingId(null)
-    }
-    window.addEventListener('product-saved', handleSaved as EventListener)
-    window.addEventListener(
-      'product-edit-cancel',
-      handleCancel as EventListener
-    )
-    return () => {
-      window.removeEventListener('product-saved', handleSaved as EventListener)
-      window.removeEventListener(
-        'product-edit-cancel',
-        handleCancel as EventListener
-      )
-    }
-  }, [])
 
   return (
     <main className='min-h-screen bg-background-primary text-text-primary px-6 py-10 container mx-auto'>

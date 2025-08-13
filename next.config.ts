@@ -22,6 +22,16 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: isGitHubPages ? `/${repoName}` : '',
   },
+  webpack: (config) => {
+    // Silence critical dependency warning from supabase realtime-js dynamic requires
+    config.module.parser = config.module.parser || {}
+    // Add ignore for expression dependency (best-effort; warning only)
+    config.ignoreWarnings = config.ignoreWarnings || []
+    config.ignoreWarnings.push(
+      /Critical dependency: the request of a dependency is an expression/
+    )
+    return config
+  },
 }
 
 export default nextConfig
