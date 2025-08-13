@@ -37,10 +37,13 @@ export default function CartPage() {
                   className='flex gap-6 p-4 rounded-lg bg-[var(--background-secondary)] ring-1 ring-white/10'
                 >
                   <div className='w-28 h-28 rounded-md overflow-hidden bg-black/30 flex items-center justify-center'>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.image}
                       alt={item.name}
                       className='w-full h-full object-cover'
+                      loading='lazy'
+                      decoding='async'
                     />
                   </div>
                   <div className='flex-1'>

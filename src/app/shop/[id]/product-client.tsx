@@ -166,6 +166,7 @@ export default function ProductClient({ product }: { product: Product }) {
             </div>
             <div className='lg:w-1/2 w-full order-1 lg:order-2 mb-8 lg:mb-0'>
               <div className='relative rounded-lg overflow-hidden ring-1 ring-white/10 bg-[var(--background-secondary)]'>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   alt={product.name}
                   className='w-full h-auto object-cover object-center'
@@ -173,6 +174,8 @@ export default function ProductClient({ product }: { product: Product }) {
                     product.cover_image ||
                     'https://placehold.co/800x800/0f0f0f/ffffff?text=No+Image'
                   }
+                  loading='lazy'
+                  decoding='async'
                 />
               </div>
             </div>

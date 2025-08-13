@@ -61,11 +61,18 @@ export default function ShopPage() {
         <div className='container mx-auto px-6'>
           {categoryFilter && (
             <div className='flex items-center justify-between mb-6'>
-              <p className='text-sm text-text-secondary'>Filtering by category: <span className='text-text-primary font-medium'>{categoryFilter}</span></p>
+              <p className='text-sm text-text-secondary'>
+                Filtering by category:{' '}
+                <span className='text-text-primary font-medium'>
+                  {categoryFilter}
+                </span>
+              </p>
               <button
                 onClick={() => router.push('/shop')}
                 className='text-xs px-3 py-1 rounded-md bg-white/10 hover:bg-white/20'
-              >Clear Filter</button>
+              >
+                Clear Filter
+              </button>
             </div>
           )}
           {error && (
@@ -94,6 +101,7 @@ export default function ShopPage() {
                     href={`/shop/${p.id}`}
                     className='block relative h-48 rounded-lg overflow-hidden ring-1 ring-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--accent-orange)] focus:ring-offset-2 focus:ring-offset-[var(--background-primary)]'
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={
                         p.cover_image ||
@@ -102,6 +110,7 @@ export default function ShopPage() {
                       alt={p.name}
                       className='object-cover object-center w-full h-full block'
                       loading='lazy'
+                      decoding='async'
                     />
                   </Link>
                   <div className='mt-4'>

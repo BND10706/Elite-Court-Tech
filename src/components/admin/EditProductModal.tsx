@@ -4,14 +4,12 @@ import { supabase } from '@/lib/supabaseClient'
 
 interface Props {
   id: string
-  onClose: () => void
-  onSaved: () => void
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 // Callback props are intentional in this client component; suppress serialization rule.
 // eslint-disable-next-line @next/next/no-async-client-component
-export function EditProductModal({ id, onClose, onSaved }: Props) {
+export function EditProductModal({ id }: Props) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   interface ProductForm {
@@ -73,14 +71,14 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
         })
         .eq('id', id)
       if (error) throw error
-      onSaved()
-      onClose()
+      // Emit a custom event so parent pages can refresh / close without passing function props
+      window.dispatchEvent(new CustomEvent('product-saved', { detail: { id } }))
     } catch (e) {
       setMessage(e instanceof Error ? e.message : 'Save failed')
     } finally {
       setSaving(false)
     }
-  }, [id, form, onClose, onSaved])
+  }, [id, form])
 
   if (loading)
     return (
@@ -180,7 +178,9 @@ export function EditProductModal({ id, onClose, onSaved }: Props) {
         {message && <p className='text-xs text-red-400'>{message}</p>}
         <div className='flex justify-end gap-3 pt-2'>
           <button
-            onClick={onClose}
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent('product-edit-cancel'))
+            }
             className='px-4 py-2 text-sm rounded-md bg-white/10 hover:bg-white/20'
           >
             Cancel

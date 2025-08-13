@@ -44,10 +44,8 @@ export async function generateStaticParams() {
   }
 }
 
-type ProductPageProps = { params: { id: string } }
-
-export default async function ProductPage(props: ProductPageProps) {
-  const { id } = props.params
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const { id } = params
   if (!supabaseUrl || !supabaseAnonKey) notFound()
   let product: Product | null = null
   try {

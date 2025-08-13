@@ -48,23 +48,7 @@ export default function SignInForm() {
     }
   }
 
-  async function oauth(provider: 'google' | 'github') {
-    setLoading(true)
-    setMessage(null)
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo:
-          typeof window !== 'undefined'
-            ? `${window.location.origin}${
-                process.env.NEXT_PUBLIC_BASE_PATH ?? ''
-              }`
-            : undefined,
-      },
-    })
-    if (error) setMessage(error.message)
-    setLoading(false)
-  }
+  // Removed unused oauth() handler to satisfy lint (was unused)
 
   return (
     <div className='flex-1'>

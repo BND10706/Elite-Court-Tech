@@ -85,6 +85,30 @@ export default function ProductsAdminPage() {
     )
   if (!authorized) return null
 
+  // Event listeners for modal events (avoid passing function props to modal)
+  useEffect(() => {
+    function handleSaved(e: Event) {
+      const id = (e as CustomEvent).detail?.id as string | undefined
+      if (id) refresh()
+      setEditingId(null)
+    }
+    function handleCancel() {
+      setEditingId(null)
+    }
+    window.addEventListener('product-saved', handleSaved as EventListener)
+    window.addEventListener(
+      'product-edit-cancel',
+      handleCancel as EventListener
+    )
+    return () => {
+      window.removeEventListener('product-saved', handleSaved as EventListener)
+      window.removeEventListener(
+        'product-edit-cancel',
+        handleCancel as EventListener
+      )
+    }
+  }, [])
+
   return (
     <main className='min-h-screen bg-background-primary text-text-primary px-6 py-10 container mx-auto'>
       <AdminNav />
@@ -117,10 +141,13 @@ export default function ProductsAdminPage() {
               >
                 <td className='px-3 py-2 flex items-center gap-2'>
                   {p.cover_image && (
+                    // eslint-disable-next-line @next/next/no-img-element -- small thumbnail; acceptable
                     <img
                       src={p.cover_image}
                       alt=''
                       className='w-8 h-8 object-cover rounded'
+                      loading='lazy'
+                      decoding='async'
                     />
                   )}
                   <span>{p.name}</span>
@@ -157,13 +184,7 @@ export default function ProductsAdminPage() {
           </tbody>
         </table>
       </div>
-      {editingId && (
-        <EditProductModal
-          id={editingId}
-          onClose={() => setEditingId(null)}
-          onSaved={refresh}
-        />
-      )}
+      {editingId && <EditProductModal id={editingId} />}
     </main>
   )
 }
